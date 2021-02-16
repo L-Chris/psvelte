@@ -36,20 +36,20 @@ class Parser {
 
 			const name = this.read_until(/>/)
 
-			const element = {
-				start: this.index,
-				end: null,
-				type: 'Element',
-				name,
-				children: []
-			}
-
 			this.read('>')
 
 			if (is_closing_tag && parent.name === name) {
-				element.end = this.index
+				parent.end = this.index
 				this.stack.pop()
 			} else {
+				const element = {
+					start: this.index,
+					end: null,
+					type: 'Element',
+					name,
+					children: []
+				}
+
 				parent.children.push(element)
 				this.stack.push(element)
 			}
