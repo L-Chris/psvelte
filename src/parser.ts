@@ -1,10 +1,4 @@
-interface Node {
-	start: number;
-	end: number;
-	name: string;
-	type: string;
-	children?: Node[];
-}
+import { Node, fragment } from "./node"
 
 class Parser {
 	index: number
@@ -28,32 +22,14 @@ class Parser {
 		this.stack.push(this.root)
 
 		while(this.index < this.template.length) {
-			if (!this.read('<')) return
-
-			const parent = this.current()
-
-			const is_closing_tag = this.read('/')
-
-			const name = this.read_until(/>/)
-
-			this.read('>')
-
-			if (is_closing_tag && parent.name === name) {
-				parent.end = this.index
-				this.stack.pop()
-			} else {
-				const element = {
-					start: this.index,
-					end: null,
-					type: 'Element',
-					name,
-					children: []
-				}
-
-				parent.children.push(element)
-				this.stack.push(element)
-			}
+			fragment(this)
 		}
+	}
+
+	match(pattern: string) {
+		if (this.template.slice(this.index, this.index + pattern.length) === pattern) return true
+
+		return false
 	}
 
 	current() {
@@ -91,5 +67,6 @@ function parse(str: string) {
 }
 
 export {
+	Parser,
 	parse
 }

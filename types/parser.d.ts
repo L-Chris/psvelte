@@ -1,9 +1,14 @@
-interface Node {
-    start: number;
-    end: number;
-    name: string;
-    type: string;
-    children?: Node[];
+import { Node } from "./node";
+declare class Parser {
+    index: number;
+    template: string;
+    stack: Node[];
+    root: Node;
+    constructor(template: string);
+    match(pattern: string): boolean;
+    current(): Node;
+    read(pattern: string): boolean;
+    read_until(pattern: RegExp): string;
 }
 declare function parse(str: string): Node;
-export { parse };
+export { Parser, parse };
