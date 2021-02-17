@@ -1,10 +1,10 @@
-import { Node, fragment } from "./node"
+import { TemplateNode, fragment } from "./node"
 
 class Parser {
 	index: number
 	template: string
-	stack: Node[]
-	root: Node
+	stack: TemplateNode[]
+	root: TemplateNode
 
 	constructor(template: string) {
 		this.index = 0

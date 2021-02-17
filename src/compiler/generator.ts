@@ -1,15 +1,15 @@
-import { Node } from "./node";
+import { TemplateNode } from "./node";
 
 class Generator {
 	code: string
-	ast: Node
+	ast: TemplateNode
 
-	constructor(ast: Node) {
+	constructor(ast: TemplateNode) {
 		this.ast = ast
 		this.code = this.transform(ast)
 	}
 
-	transform(ast: Node) {
+	transform(ast: TemplateNode) {
 		let statement = ast.children.reduce((pre, val) => {
 			let template = val.type === 'Element' ? `element('${val.name}')` : `text('${val.content}')`;
 
@@ -17,23 +17,25 @@ class Generator {
 		}, '')
 
 		let code = `
-const append = (target, node) => target.appendChild(node)
-const element = (tag) => document.createElement(tag)
-const text = (content) => document.createTextNode(content)
+import {
+	append,
+	element,
+	text
+} from 'psvelte'
 
 function render(target) {
 	var root = ${statement}
 	append(target, root);
 }
 
-window.render = render
+export default render
 `
 
 		return code
 	}
 }
 
-function generate(ast: Node) {
+function generate(ast: TemplateNode) {
 	const generator = new Generator(ast)
 	return generator.code
 }

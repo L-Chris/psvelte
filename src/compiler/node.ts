@@ -1,15 +1,15 @@
 import { Parser } from './parser'
 
-interface Node {
+interface TemplateNode {
 	start: number;
 	end: number;
 	name?: string;
 	type: string;
 	content?: string;
-	children?: Node[];
+	children?: TemplateNode[];
 }
 
-interface TextNode extends Node {
+interface TextTemplateNode extends TemplateNode {
 	content: string;
 }
 
@@ -49,7 +49,7 @@ function tag(parser: Parser) {
 function text(parser: Parser) {
 	const parent = parser.current()
 
-	const element: TextNode = {
+	const element: TextTemplateNode = {
 		start: parser.index,
 		end: null,
 		type: 'Text',
@@ -65,7 +65,7 @@ function text(parser: Parser) {
 }
 
 export {
-	Node,
-	TextNode,
+	TemplateNode,
+	TextTemplateNode,
 	fragment
 }

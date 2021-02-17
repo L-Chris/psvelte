@@ -1,14 +1,14 @@
 import { Parser } from './parser';
-interface Node {
+interface TemplateNode {
     start: number;
     end: number;
     name?: string;
     type: string;
     content?: string;
-    children?: Node[];
+    children?: TemplateNode[];
 }
-interface TextNode extends Node {
+interface TextTemplateNode extends TemplateNode {
     content: string;
 }
 declare function fragment(parser: Parser): void;
-export { Node, TextNode, fragment };
+export { TemplateNode, TextTemplateNode, fragment };

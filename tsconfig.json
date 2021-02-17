@@ -1,7 +1,5 @@
 {
-	"include": [
-		"src"
-	],
+	"include": [],
 
 	"compilerOptions": {
 		"rootDir": "src",
@@ -18,7 +16,7 @@
 		"noErrorTruncation": true,
 
 		// rollup takes care of these
-		"module": "CommonJS",
+		"module": "ESNext",
 		"moduleResolution": "node",
 		"resolveJsonModule": true,
 		"allowSyntheticDefaultImports": true,
@@ -28,8 +26,6 @@
 		"noImplicitThis": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
-		"typeRoots": ["./node_modules/@types"],
-		"outDir": "dist",
-		"sourceMap": true
+		"typeRoots": ["./node_modules/@types"]
 	}
 }
