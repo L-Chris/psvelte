@@ -1,4 +1,4 @@
-import { compile } from './'
+const { compile } = require('../dist')
 
 const fs = require('fs')
 
