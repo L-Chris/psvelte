@@ -4,6 +4,7 @@ interface Node {
     end: number;
     name?: string;
     type: string;
+    content?: string;
     children?: Node[];
 }
 interface TextNode extends Node {

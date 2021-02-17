@@ -1,10 +1,10 @@
-import { parse } from './parser'
+import { compile } from './'
 
 const fs = require('fs')
 
-const data = fs.readFileSync('./test/example.svelte', { encoding: 'utf-8' })
+const template = fs.readFileSync('./test/example.svelte', { encoding: 'utf-8' })
 
-const result = parse(data)
+const result = compile(template)
 
-console.log(result)
+fs.writeFileSync('./test/example.js', result)
 
