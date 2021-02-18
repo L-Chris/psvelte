@@ -7,8 +7,12 @@ interface TemplateNode {
     content?: string;
     children?: TemplateNode[];
 }
+interface FragmentNode extends TemplateNode {
+    id?: string;
+    parent?: FragmentNode;
+}
 interface TextTemplateNode extends TemplateNode {
     content: string;
 }
 declare function fragment(parser: Parser): void;
-export { TemplateNode, TextTemplateNode, fragment };
+export { TemplateNode, TextTemplateNode, FragmentNode, fragment };

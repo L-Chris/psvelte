@@ -9,6 +9,11 @@ interface TemplateNode {
 	children?: TemplateNode[];
 }
 
+interface FragmentNode extends TemplateNode {
+	id?: string;
+	parent?: FragmentNode;
+}
+
 interface TextTemplateNode extends TemplateNode {
 	content: string;
 }
@@ -53,6 +58,7 @@ function text(parser: Parser) {
 		start: parser.index,
 		end: null,
 		type: 'Text',
+		name: 'text',
 		content: ''
 	}
 
@@ -67,5 +73,6 @@ function text(parser: Parser) {
 export {
 	TemplateNode,
 	TextTemplateNode,
+	FragmentNode,
 	fragment
 }
