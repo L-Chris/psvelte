@@ -7,3 +7,9 @@ export const detach = (node: Node) => node.parentNode.removeChild(node)
 export const element = (tagName: string) => document.createElement(tagName)
 
 export const text = (data: string) => document.createTextNode(data)
+
+export const styleElement = (content: string) => {
+	const el = element('style')
+	el.innerHTML = content
+	return el
+}

@@ -15,5 +15,8 @@ interface FragmentNode extends TemplateNode {
 interface TextTemplateNode extends TemplateNode {
     content: string;
 }
+interface StyleTemplateNode extends TemplateNode {
+    content: string;
+}
 declare function fragment(parser: Parser): void;
-export { TemplateNode, TextTemplateNode, FragmentNode, fragment };
+export { TemplateNode, TextTemplateNode, StyleTemplateNode, FragmentNode, fragment };

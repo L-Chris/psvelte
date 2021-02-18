@@ -1,14 +1,15 @@
-import { FragmentNode, TemplateNode } from "./node";
+import { ParserAST } from './parser'
+import { FragmentNode } from "./node";
 import { walk } from 'estree-walker'
 import { flatten } from "./utils";
 
 class Generator {
+	ast: ParserAST;
 	code: string
-	ast: TemplateNode
 	fragment: FragmentNode
 	idMap: Map<string, number>
 
-	constructor(ast: TemplateNode) {
+	constructor(ast: ParserAST) {
 		this.ast = ast
 		this.idMap = new Map()
 		this.fragment = this.transform()
@@ -17,7 +18,7 @@ class Generator {
 
 	transform() {
 		const generator = this
-		const data = JSON.parse(JSON.stringify(this.ast))
+		const data = JSON.parse(JSON.stringify(this.ast.html))
 
 		walk(data, {
 			enter(node: any, parent: any) {
@@ -47,16 +48,29 @@ class Generator {
 			createStatements.push(createBlock)
 
 			if (val.parentId) {
-				const insertBlock = `insert(${val.parentId}, ${val.id})`
+				const insertBlock = val.name === 'root'
+					? `insert(this.target, ${val.id})`
+					: `insert(${val.parentId}, ${val.id})`
 
 				insertStatements.push(insertBlock)
 			}
+		})
+
+		this.ast.css.forEach(val => {
+			const id = this.get_unique_name(val.name || val.type)
+
+			const createBlock = `const ${id} = styleElement('${val.content}')`
+			const insertBlock = `insert(this.target, ${id})`
+
+			createStatements.push(createBlock)
+			insertStatements.push(insertBlock)
 		})
 
 		let code =
 `import {
 	SvelteComponent,
 	element,
+	styleElement,
 	text,
 	append,
 	insert,
@@ -90,7 +104,7 @@ export default App
 	}
 }
 
-function generate(ast: TemplateNode) {
+function generate(ast: ParserAST) {
 	const generator = new Generator(ast)
 
 	return generator.code

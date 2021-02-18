@@ -1,22 +1,26 @@
 import { Parser } from './parser'
 
 interface TemplateNode {
-	start: number;
-	end: number;
-	name?: string;
-	type: string;
-	content?: string;
-	children?: TemplateNode[];
+	start: number
+	end: number
+	name?: string
+	type: string
+	content?: string
+	children?: TemplateNode[]
 }
 
 interface FragmentNode extends TemplateNode {
-	id?: string;
-	parentId: string;
-	parentType: string;
+	id?: string
+	parentId: string
+	parentType: string
 }
 
 interface TextTemplateNode extends TemplateNode {
-	content: string;
+	content: string
+}
+
+interface StyleTemplateNode extends TemplateNode {
+	content: string
 }
 
 function fragment(parser: Parser) {
@@ -25,7 +29,7 @@ function fragment(parser: Parser) {
 }
 
 function tag(parser: Parser) {
-	parser.index++
+	const start = parser.index++
 
 	const parent = parser.current()
 
@@ -35,12 +39,30 @@ function tag(parser: Parser) {
 
 	parser.read('>')
 
+	// css处理
+	if (name === 'style') {
+		const content = parser.read_until(/<\/style>/)
+		parser.read('</style>')
+
+		const element: StyleTemplateNode = {
+			start,
+			end: parser.index,
+			type: 'Style',
+			name: 'style',
+			content
+		}
+
+		parser.css.push(element)
+
+		return
+	}
+
 	if (is_closing_tag && parent.name === name) {
 		parent.end = parser.index
 		parser.stack.pop()
 	} else {
 		const element = {
-			start: parser.index,
+			start,
 			end: null,
 			type: 'Element',
 			name,
@@ -74,6 +96,7 @@ function text(parser: Parser) {
 export {
 	TemplateNode,
 	TextTemplateNode,
+	StyleTemplateNode,
 	FragmentNode,
 	fragment
 }

@@ -1,17 +1,24 @@
-import { TemplateNode, fragment } from "./node"
+import { TemplateNode, StyleTemplateNode, fragment } from "./node"
+
+interface ParserAST {
+	html: TemplateNode
+	css: StyleTemplateNode[]
+}
 
 class Parser {
 	index: number
 	template: string
 	stack: TemplateNode[]
-	root: TemplateNode
+	html: TemplateNode
+	css: StyleTemplateNode[]
 
 	constructor(template: string) {
 		this.index = 0
 		this.template = template.trim().replace(/\s/g, '')
 		this.stack = []
+		this.css = []
 
-		this.root = {
+		this.html = {
 			start: null,
 			end: null,
 			name: 'root',
@@ -19,7 +26,7 @@ class Parser {
 			children: []
 		}
 
-		this.stack.push(this.root)
+		this.stack.push(this.html)
 
 		while(this.index < this.template.length) {
 			fragment(this)
@@ -60,13 +67,17 @@ class Parser {
 	}
 }
 
-function parse(str: string) {
+function parse(str: string): ParserAST {
 	const parser = new Parser(str)
 
-	return parser.root
+	return {
+		html: parser.html,
+		css: parser.css
+	}
 }
 
 export {
+	ParserAST,
 	Parser,
 	parse
 }

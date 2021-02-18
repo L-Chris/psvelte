@@ -1,3 +1,3 @@
-import { TemplateNode } from "./node";
-declare function generate(ast: TemplateNode): string;
+import { ParserAST } from './parser';
+declare function generate(ast: ParserAST): string;
 export { generate };

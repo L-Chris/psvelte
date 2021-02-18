@@ -385,7 +385,7 @@ pirates@^4.0.1:
   dependencies:
     node-modules-regexp "^1.0.0"
 
-"psvelte@file:./dist":
+"psvelte@file:dist":
   version "0.0.0"
 
 readdirp@~3.5.0:
