@@ -38,34 +38,42 @@ class Generator {
 	generate() {
 		const arr = flatten(this.fragment)
 
-		let block = arr.reduce((pre, val) => {
-			const createBlock = `const ${val.id} = ${val.type === 'Element' ? `element('${val.name}')` : `text('${val.content}')`};\n`
+		const createStatements = []
+		const insertStatements = []
 
-			pre += createBlock
+		arr.forEach(val => {
+			const createBlock = `const ${val.id} = ${val.type === 'Element' ? `element('${val.name}')` : `text('${val.content}')`}`
+
+			createStatements.push(createBlock)
 
 			if (val.parentId) {
-				const insertBlock = `insert(${val.parentId}, ${val.id});\n`
+				const insertBlock = `insert(${val.parentId}, ${val.id})`
 
-				pre += insertBlock
+				insertStatements.push(insertBlock)
 			}
-
-			return pre
-
-		}, '')
+		})
 
 		let code =
 `import {
+	SvelteComponent,
 	element,
 	text,
 	append,
-	insert
+	insert,
 } from 'psvelte'
 
-function create_fragment(target) {
-	${block}
+class App extends SvelteComponent {
+	constructor(target) {
+		super(target)
+	}
+
+	createFragment() {
+		${createStatements.join('\n		')}
+		${insertStatements.join('\n		')}
+	}
 }
 
-export default create_fragment
+export default App
 `
 
 		return code
