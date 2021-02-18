@@ -9,7 +9,8 @@ interface TemplateNode {
 }
 interface FragmentNode extends TemplateNode {
     id?: string;
-    parent?: FragmentNode;
+    parentId: string;
+    parentType: string;
 }
 interface TextTemplateNode extends TemplateNode {
     content: string;

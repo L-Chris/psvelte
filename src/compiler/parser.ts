@@ -8,7 +8,7 @@ class Parser {
 
 	constructor(template: string) {
 		this.index = 0
-		this.template = template.trim()
+		this.template = template.trim().replace(/\s/g, '')
 		this.stack = []
 
 		this.root = {

@@ -1,1 +1,5 @@
-<div><span>123</span></div>
+<div>
+	<span>1</span>
+	<span>2</span>
+	<div>3</div>
+</div>

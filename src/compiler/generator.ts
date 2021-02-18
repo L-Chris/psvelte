@@ -1,5 +1,6 @@
 import { FragmentNode, TemplateNode } from "./node";
 import { walk } from 'estree-walker'
+import { flatten } from "./utils";
 
 class Generator {
 	code: string
@@ -35,24 +36,36 @@ class Generator {
 	}
 
 	generate() {
-		let statement = this.fragment.children.reduce((pre, val) => {
-			let template = val.type === 'Element' ? `element('${val.name}')` : `text('${val.content}')`;
+		const arr = flatten(this.fragment)
 
-			return `${pre}${template};`
+		let block = arr.reduce((pre, val) => {
+			const createBlock = `const ${val.id} = ${val.type === 'Element' ? `element('${val.name}')` : `text('${val.content}')`};\n`
+
+			pre += createBlock
+
+			if (val.parentId) {
+				const insertBlock = `insert(${val.parentId}, ${val.id});\n`
+
+				pre += insertBlock
+			}
+
+			return pre
+
 		}, '')
 
-		let code = `
-import {
+		let code =
+`import {
+	element,
+	text,
 	append,
-	element
+	insert
 } from 'psvelte'
 
-function render(target) {
-	var root = ${statement}
-	append(target, root);
+function create_fragment(target) {
+	${block}
 }
 
-export default render
+export default create_fragment
 `
 
 		return code
@@ -71,6 +84,7 @@ export default render
 
 function generate(ast: TemplateNode) {
 	const generator = new Generator(ast)
+
 	return generator.code
 }
 
