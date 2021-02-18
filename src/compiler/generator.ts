@@ -1,5 +1,5 @@
 import { ParserAST } from './parser'
-import { FragmentNode } from "./node";
+import { TemplateNode, FragmentNode } from "./interfaces";
 import { walk } from 'estree-walker'
 import { flatten } from "./utils";
 
@@ -21,8 +21,10 @@ class Generator {
 		const data = JSON.parse(JSON.stringify(this.ast.html))
 
 		walk(data, {
-			enter(node: any, parent: any) {
-				const newNode = {
+			enter(node: TemplateNode, parent: FragmentNode) {
+				if (node.type === 'Attribute') return this.skip()
+
+				const newNode: FragmentNode = {
 					...node,
 					id: generator.get_unique_name(node.name || node.type),
 					parentId: parent && parent.id,
@@ -41,11 +43,20 @@ class Generator {
 
 		const createStatements = []
 		const insertStatements = []
+		const attrStatements = []
 
 		arr.forEach(val => {
 			const createBlock = `const ${val.id} = ${val.type === 'Element' ? `element('${val.name}')` : `text('${val.content}')`}`
 
 			createStatements.push(createBlock)
+
+			if (val.type === 'Element' && val.attributes.length > 0) {
+				val.attributes.forEach(attr => {
+					const attrBlock = `attr(${val.id}, '${attr.name}', '${attr.value}')`
+
+					attrStatements.push(attrBlock)
+				})
+			}
 
 			if (val.parentId) {
 				const insertBlock = val.name === 'root'
@@ -72,6 +83,7 @@ class Generator {
 	element,
 	styleElement,
 	text,
+	attr,
 	append,
 	insert,
 } from 'psvelte'
@@ -83,6 +95,7 @@ class App extends SvelteComponent {
 
 	createFragment() {
 		${createStatements.join('\n		')}
+		${attrStatements.join('\n		')}
 		${insertStatements.join('\n		')}
 	}
 }

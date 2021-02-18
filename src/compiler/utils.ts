@@ -5,7 +5,7 @@ const flatten = <T extends BaseNode>(ast: T): T[] => {
 
 	walk(ast, {
 		enter(node, parent) {
-			if (!parent || node.type === 'Fragment') return
+			if (!parent || ['Fragment', 'Attribute'].includes(node.type)) return
 
 			result.push(node)
 		}

@@ -1,4 +1,4 @@
-<div>
+<div class="home">
 	<span>1</span>
 	<span>2</span>
 	<div>3</div>
@@ -16,5 +16,9 @@ html, body {
 #root{
 	width: 100%;
 	height: 100%;
+}
+
+.home {
+	color: red;
 }
 </style>

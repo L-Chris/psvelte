@@ -1,8 +1,9 @@
-import { TemplateNode, StyleTemplateNode, fragment } from "./node"
+import { TemplateNode } from "./interfaces"
+import { fragment } from "./node"
 
 interface ParserAST {
 	html: TemplateNode
-	css: StyleTemplateNode[]
+	css: TemplateNode[]
 }
 
 class Parser {
@@ -10,11 +11,13 @@ class Parser {
 	template: string
 	stack: TemplateNode[]
 	html: TemplateNode
-	css: StyleTemplateNode[]
+	css: TemplateNode[]
 
 	constructor(template: string) {
 		this.index = 0
-		this.template = template.trim().replace(/\s/g, '')
+		this.template = template
+			.replace(/^\s+|\s+$/g, '')
+			.replace(/\n|\t/g, '')
 		this.stack = []
 		this.css = []
 
@@ -64,6 +67,10 @@ class Parser {
 
 		this.index = start + match.index
 		return this.template.slice(start, this.index)
+	}
+
+	allow_whitespace() {
+		this.read_until(/[^\s]/)
 	}
 }
 
