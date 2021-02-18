@@ -19,8 +19,7 @@ class Generator {
 		let code = `
 import {
 	append,
-	element,
-	text
+	element
 } from 'psvelte'
 
 function render(target) {
